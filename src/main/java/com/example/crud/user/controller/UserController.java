@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1")
@@ -19,32 +20,26 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(){
-        List<User> userList=userService.getUsers();
-        if(userList.isEmpty()){
-            throw new ArithmeticException("user not found");
-        }
-            return ResponseEntity.ok(userService.getUsers());
+        return ResponseEntity.ok(userService.getUsers());
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<String> getUser(@PathVariable String id){
-        return ResponseEntity.ok(userService.getUser());
+    public ResponseEntity<User> getUser(@PathVariable String id){
+        return ResponseEntity.ok(userService.getUser(id));
     }
 
     @PostMapping("/users")
-    public ResponseEntity<String> saveUser(@RequestBody User User){
-
-            userService.saveUser(User);
-        return ResponseEntity.ok("User added to system");
+    public ResponseEntity<Map<String,String>> saveUser(@RequestBody User User){
+        return ResponseEntity.ok(userService.saveUser(User));
     }
 
-    @PutMapping("/users")
-    public ResponseEntity<String> updateUser(@PathVariable String id){
-        return ResponseEntity.ok(userService.updateUser());
+    @PutMapping("/users/{id}")
+    public ResponseEntity<Map<String,String>> updateUserPut(@RequestBody User user, @PathVariable String id){
+        return ResponseEntity.ok(userService.updateUser(user,id));
     }
 
-    @DeleteMapping("/users")
-    public ResponseEntity<String> deleteUser(@PathVariable String id){
-        return ResponseEntity.ok(userService.deleteUser());
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Map<String,String>> deleteUser(@PathVariable String id){
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 }
