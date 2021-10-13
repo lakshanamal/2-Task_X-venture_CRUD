@@ -2,6 +2,7 @@ package com.example.crud.user.service;
 
 import com.example.crud.user.exception.UserAlreadyInException;
 import com.example.crud.user.exception.UserNotFoundException;
+import com.example.crud.user.exception.GenericRuntimeException;
 import com.example.crud.user.model.User;
 import com.example.crud.user.repository.UserRepository;
 import org.slf4j.Logger;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static com.example.crud.user.exception.ErrorCode.NOT_FOUND;
+import static com.example.crud.user.exception.ErrorCode.USER_ALREADY_EXIST;
 
 @Service
 public class UserService {
@@ -29,7 +33,7 @@ public class UserService {
     public User getUser(String id) {
         if(userRepository.findById(id).isEmpty()){
             log.error("User not found, user_id="+id);
-            throw new UserNotFoundException("User not found, user_id="+id);
+            throw new GenericRuntimeException(NOT_FOUND);
         }
         log.info("Get request completed");
             return userRepository.findById(id).get();
@@ -38,7 +42,8 @@ public class UserService {
     public Map<String,String> saveUser(User user) {
        if(userRepository.findById(user.getId()).isPresent()){
            log.error("User already in system, user_id="+user.getId());
-           throw new UserAlreadyInException("User already in system, user_id="+user.getId());
+//           throw new UserAlreadyInException("User already in system, user_id="+user.getId());
+           throw new GenericRuntimeException(USER_ALREADY_EXIST);
        }
         userRepository.save(user);
         Map<String,String> map = new HashMap<String,String>();

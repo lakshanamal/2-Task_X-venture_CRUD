@@ -27,4 +27,10 @@ public class ApiExceptionHandler {
         ApiException apiException=new ApiException(e.getMessage(),badRequest, ZonedDateTime.now(ZoneId.of("Z")));
         return new ResponseEntity<>(apiException,badRequest);
     }
+    // Generic exception handle
+    @ExceptionHandler(value = {GenericRuntimeException.class})
+    public ResponseEntity<Object> genericExceptionHandler(GenericRuntimeException e){
+        ApiException apiException=new ApiException(e.getMessage(),e.getHttpStatus(), ZonedDateTime.now(ZoneId.of("Z")));
+        return new ResponseEntity<>(apiException,e.getHttpStatus());
+    }
 }
